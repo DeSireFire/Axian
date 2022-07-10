@@ -12,8 +12,28 @@ from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent, Message
 from nonebot.params import CommandArg
 import random
 import asyncio
-roll = on_command("roll", priority=5, block=True)
+roll = on_command("roll", aliases={"随机选择"}, priority=5, block=True)
 NICKNAME = "nya"
+
+__zx_plugin_name__ = "roll"
+__plugin_usage__ = """
+usage：
+    随机数字 或 随机选择事件
+    指令：
+        roll: 随机 0-100 的数字
+        roll *[文本]: 随机事件
+        示例：roll 吃饭 睡觉 打游戏
+""".strip()
+__plugin_des__ = "犹豫不决吗？那就让我帮你决定吧"
+__plugin_cmd__ = ["roll", "roll *[文本]"]
+__plugin_version__ = 0.1
+__plugin_author__ = "HibiKier"
+__plugin_settings__ = {
+    "level": 5,
+    "default_status": True,
+    "limit_superuser": False,
+    "cmd": ["/roll"],
+}
 
 @roll.handle()
 async def _(event: MessageEvent, arg: Message = CommandArg()):
