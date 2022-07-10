@@ -22,4 +22,5 @@ on_regex: 创建正则表达式匹配事件响应器。
 CommandGroup: 创建具有共同命令名称前缀的命令组。
 MatcherGroup: 创建具有共同参数的响应器组。
 """
-from . import test
+from . import rollEvent
+from . import helloworld
