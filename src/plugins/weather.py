@@ -12,7 +12,8 @@ from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from nonebot.params import Arg, CommandArg, ArgPlainText
 
-weather = on_command("weather", rule=to_me(), aliases={"天气", "天气预报"}, priority=5)
+# 创建命令消息事件响应器
+weather = on_command("weather", rule=to_me(), aliases={"球气", "天气预报"}, priority=5)
 
 
 @weather.handle()
