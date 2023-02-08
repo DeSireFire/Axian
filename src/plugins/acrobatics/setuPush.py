@@ -60,22 +60,21 @@ async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
     raw_dict = {}
     raw_msgs = list(event_dict.get('message'))
     raw_dict["sender"] = event.get_user_id() or "415592997"
-    raw_dict["imgs"] = {i.data.get("file"): i.data.get("url") for i in raw_msgs} or {}
+    raw_dict["imgs"] = {i.data.get("file"): i.data.get("url") for i in raw_msgs if i.data.get('subType') == '0'} or {}
     raw_dict["len"] = len(list(raw_dict["imgs"].keys()))
-    if not raw_dict["imgs"]:          # 如果返回值是False则阻断事件
-        matcher.stop_propagation()
-
-    # 信息装填
-    msgs = [
-        # MessageSegment(type='text', data={'text': f"啊对对对！"}),
-        MessageSegment(type='image', data={'file': v}) for k, v in raw_dict.get('imgs').items() if ".image" in k
-    ]
-    msgs = await msgs_return_line(msgs)
-    callback_msg = Message(msgs)
-    await bot.send_group_msg(
-        group_id=push_group[0],
-        message=callback_msg
-    )
+    # 未获取到subType=0 的图片时则不执行转发
+    if raw_dict["imgs"]:
+        # 信息装填
+        msgs = [
+            # MessageSegment(type='text', data={'text': f"啊对对对！"}),
+            MessageSegment(type='image', data={'file': v}) for k, v in raw_dict.get('imgs').items() if ".image" in k
+        ]
+        msgs = await msgs_return_line(msgs)
+        callback_msg = Message(msgs)
+        await bot.send_group_msg(
+            group_id=push_group[0],
+            message=callback_msg
+        )
 
 async def msgs_return_line(msgs: list) -> list:
     """
@@ -91,5 +90,6 @@ async def msgs_return_line(msgs: list) -> list:
             break
         res_msgs.append(MessageSegment.text("\n"))
     return res_msgs
+
 # 消息撤回
 # textRetract = on_message(rule=bvAppShare_checker)
