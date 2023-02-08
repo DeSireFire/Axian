@@ -6,17 +6,20 @@
 # Blog      : https://blog.raxianch.moe/
 # Github    : https://github.com/DeSireFire
 __author__ = 'RaXianch'
+
 from nonebot.adapters.onebot.v11 import Bot, Event
 from nonebot import on_message, on_command
 import ast
 
 # 命令接收测试
 test = on_command('test')
+
+
 @test.handle()
 async def _(bot: Bot, event: Event):
     # call_api的写法一
-    data = await bot.call_api('get_group_info',**{
-        'group_id' : 813781752
+    data = await bot.call_api('get_group_info', **{
+        'group_id': 813781752
     })
     # 对json进行转义,安全的eval
     data = ast.literal_eval(str(data))
@@ -25,9 +28,10 @@ async def _(bot: Bot, event: Event):
           \n成员数：{data['member_count']}"
     # call_api的写法二
     await bot.send(
-        event   = event,
-        message = msg
+        event=event,
+        message=msg
     )
+
 
 from nonebot import on_message
 from nonebot.matcher import Matcher
@@ -64,7 +68,10 @@ from nonebot.adapters.onebot.v11 import Event
 
 # 测试未成功
 from nonebot.permission import SUPERUSER
+
 matcher = on_command("测试超管", permission=SUPERUSER)
+
+
 @matcher.handle()
 async def _(event: Event):
     message = str(event.get_message())
@@ -74,7 +81,6 @@ async def _(event: Event):
 # @matcher.got("key1", "超管提问")
 # async def _():
 #     await matcher.send("超管命令 got 成功")
-
 
 
 # from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN,PRIVATE

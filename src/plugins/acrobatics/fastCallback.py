@@ -6,6 +6,7 @@
 # Blog      : https://blog.raxianch.moe/
 # Github    : https://github.com/DeSireFire
 __author__ = 'RaXianch'
+
 import random
 import asyncio
 from . import *
@@ -15,6 +16,7 @@ from nonebot.rule import to_me
 from nonebot.params import CommandArg
 
 ql_driver = on_keyword({"面包"}, rule=to_me(), priority=1, block=True)
+
 
 @ql_driver.handle()
 async def _(event: MessageEvent, arg: Message = CommandArg()):
@@ -31,7 +33,7 @@ async def _(event: MessageEvent, arg: Message = CommandArg()):
         await ql_driver.finish(f"把那一籃面包推到{user_name}面前")
 
 
-async def randomCB(probability:int)->bool:
+async def randomCB(probability: int) -> bool:
     """
     概率器，返回真和假
     :param probability: int, 0~9
@@ -43,5 +45,3 @@ async def randomCB(probability:int)->bool:
         return True
     else:
         return False
-
-

@@ -9,3 +9,4 @@ __author__ = 'RaXianch'
 base_cmd = ["qlmb"]
 base_aliases = {"确立目标"}
 # from . import fastCallback
+from . import setuPush
