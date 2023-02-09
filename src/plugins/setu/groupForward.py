@@ -60,6 +60,24 @@ setuGroupForward = on_message(rule=forwardRule)
 
 @setuGroupForward.handle()
 async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
+    """
+    subTyper
+    0	正常图片
+    1	表情包, 在客户端会被分类到表情包图片并缩放显示
+    2	热图
+    3	斗图
+    4	智图?
+    7	贴图
+    8	自拍
+    9	贴图广告?
+    10	有待测试
+    13	热搜图
+
+    :param bot:
+    :param event:
+    :param matcher:
+    :return:
+    """
     event_dict = dict(event)
     raw_dict = {}
     raw_msgs = list(event_dict.get('message'))
@@ -68,7 +86,9 @@ async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
     # raw_dict["len"] = len(list(raw_dict["imgs"].keys()))
 
     # 批量过滤图片
-    temp_imgs = [i.data.get("url") for i in raw_msgs if i.data.get('subType') == '0']
+    # cq类型过滤
+    temp_imgs = [i.data.get("url") for i in raw_msgs if i.data.get('subType') in ['0', '8', '2', '13']]
+    # 条件过滤
     imgs = await img_head_filter(temp_imgs)
 
     # 未获取到subType=0 的图片时则不执行转发
@@ -109,10 +129,11 @@ async def img_head_filter(img_urls: list) -> list:
         _len = bytes_format_detail(content_len)
         # 筛选条件，全真为真
         filter_list = [
-            content_len < 1024 * 1024,
+            content_len > 512 * 1024,   # 大于半mb大小
         ]
+        print(f"url: {str(r.url)}, len:{_len}, file_size:{_len}")
         if all(filter_list):
-            print(f"file_size:{_len}, 符合过滤需求！")
+            print(f"url: {str(r.url)}, len:{_len}, file_size:{_len}, 符合过滤需求！")
             res_imgs.append(str(r.url))
     return res_imgs
 
