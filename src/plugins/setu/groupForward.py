@@ -9,20 +9,21 @@ __author__ = 'RaXianch'
 
 import random
 import asyncio
-
+from . import detection_group, push_group
 from nonebot.internal.rule import Rule
 from nonebot.matcher import Matcher
-from . import *
+from src.plugins.acrobatics import *
 from nonebot.adapters.onebot.v11 import Bot, Event, Message, MessageSegment, MessageEvent, GroupMessageEvent
 from nonebot.rule import to_me
 from nonebot import on_message, on_keyword
 from nonebot.params import CommandArg
+from src.components.netHandlers import RequestHead
+from src.components.fileHandlers import bytes_format_detail
 
+"""
+信息转发
+"""
 
-# 信息转发
-detection_group = [681666551, 813781752, 1130724261]
-# detection_group = [701568701]
-push_group = [758810535, 774150811]
 # Event 检测是否为包含图片信息
 async def imgMessage(event: Event) -> bool:
     msg_list = list(event.get_message())
@@ -34,6 +35,7 @@ async def imgMessage(event: Event) -> bool:
             res_bool = True
             break
     return res_bool
+
 
 # Event 检测是否为指定监控的群体信息
 async def specifyGroupMessage(event: Event) -> bool:
@@ -51,23 +53,31 @@ async def specifyGroupMessage(event: Event) -> bool:
     else:
         return False
 
+
 forwardRule = Rule(imgMessage, specifyGroupMessage)
 setuGroupForward = on_message(rule=forwardRule)
+
 
 @setuGroupForward.handle()
 async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
     event_dict = dict(event)
     raw_dict = {}
     raw_msgs = list(event_dict.get('message'))
-    raw_dict["sender"] = event.get_user_id() or "415592997"
-    raw_dict["imgs"] = {i.data.get("file"): i.data.get("url") for i in raw_msgs if i.data.get('subType') == '0'} or {}
-    raw_dict["len"] = len(list(raw_dict["imgs"].keys()))
+    # raw_dict["sender"] = event.get_user_id() or "415592997"
+    # raw_dict["imgs"] = {i.data.get("file"): i.data.get("url") for i in raw_msgs if i.data.get('subType') == '0'} or {}
+    # raw_dict["len"] = len(list(raw_dict["imgs"].keys()))
+
+    # 批量过滤图片
+    temp_imgs = [i.data.get("url") for i in raw_msgs if i.data.get('subType') == '0']
+    imgs = await img_head_filter(temp_imgs)
+
     # 未获取到subType=0 的图片时则不执行转发
-    if raw_dict["imgs"]:
+    # if raw_dict["imgs"]:
+    if imgs:
         # 信息装填
         msgs = [
             # MessageSegment(type='text', data={'text': f"啊对对对！"}),
-            MessageSegment(type='image', data={'file': v}) for k, v in raw_dict.get('imgs').items() if ".image" in k
+            MessageSegment(type='image', data={'file': url}) for url in imgs
         ]
         msgs = await msgs_return_line(msgs)
         callback_msg = Message(msgs)
@@ -75,6 +85,37 @@ async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
             group_id=push_group[0],
             message=callback_msg
         )
+
+
+# 工具函数
+async def img_head_filter(img_urls: list) -> list:
+    """
+    过滤干扰图片
+    img_urls：
+    {"xxx.image":url,...}
+    :param img_urls: dict, 需要过滤图片url
+    :return: img_urls, 通过过滤的url
+    """
+    if not img_urls:
+        return []
+
+    cls = RequestHead(img_urls)
+    responses = await cls.async_url_get()
+
+    res_imgs = []
+    for r in responses:
+        head = dict(r.headers) or {}
+        content_len = int(head.get("content-length")) or 0
+        _len = bytes_format_detail(content_len)
+        # 筛选条件，全真为真
+        filter_list = [
+            content_len < 1024 * 1024,
+        ]
+        if all(filter_list):
+            print(f"file_size:{_len}, 符合过滤需求！")
+            res_imgs.append(str(r.url))
+    return res_imgs
+
 
 async def msgs_return_line(msgs: list) -> list:
     """
@@ -90,6 +131,3 @@ async def msgs_return_line(msgs: list) -> list:
             break
         res_msgs.append(MessageSegment.text("\n"))
     return res_msgs
-
-# 消息撤回
-# textRetract = on_message(rule=bvAppShare_checker)

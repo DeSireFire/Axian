@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 # Author    : RaXianch
 # CreatDATE : 2022/7/20
-# CreatTIME : 12:53 
+# CreatTIME : 12:53
 # Blog      : https://blog.raxianch.moe/
 # Github    : https://github.com/DeSireFire
 __author__ = 'RaXianch'
-base_cmd = ["qlmb"]
-base_aliases = {"确立目标"}
-# from . import fastCallback
+detection_group = [681666551, 813781752, 1130724261]
+push_group = [758810535, 774150811]
+from . import groupForward
+# from . import netForward
