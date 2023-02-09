@@ -86,5 +86,5 @@ def bytes_format_detail(size, dot=2):
 
 if __name__ == '__main__':
     # res = bytes_format_detail(13189*100)
-    res = bytes_format_detail(1024*1024)
+    res = bytes_format_detail(100*1024)
     print(res)
