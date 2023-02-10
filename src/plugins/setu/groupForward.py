@@ -79,18 +79,14 @@ async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
     :return:
     """
     event_dict = dict(event)
-    raw_dict = {}
     raw_msgs = list(event_dict.get('message'))
-    # raw_dict["sender"] = event.get_user_id() or "415592997"
-    # raw_dict["imgs"] = {i.data.get("file"): i.data.get("url") for i in raw_msgs if i.data.get('subType') == '0'} or {}
-    # raw_dict["len"] = len(list(raw_dict["imgs"].keys()))
 
     # 批量过滤图片
     # cq类型过滤
     temp_imgs = [i.data.get("url") for i in raw_msgs if i.data.get('subType') in ['0', '8', '2', '13']]
     # 条件过滤
     imgs = await img_head_filter(temp_imgs)
-
+    # todo 未监听到合并信息
     # 未获取到subType=0 的图片时则不执行转发
     # if raw_dict["imgs"]:
     if imgs:
@@ -105,7 +101,6 @@ async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
             group_id=push_group[0],
             message=callback_msg
         )
-
 
 # 工具函数
 async def img_head_filter(img_urls: list) -> list:
