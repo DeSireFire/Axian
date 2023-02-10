@@ -129,7 +129,7 @@ async def img_head_filter(img_urls: list) -> list:
         _len = bytes_format_detail(content_len)
         # 筛选条件，全真为真
         filter_list = [
-            content_len > 100 * 1024,   # 大于100KB大小
+            content_len > 500 * 1024,   # 大于100KB大小
         ]
         print(f"url: {str(r.url)}, len:{content_len}, file_size:{_len}")
         if all(filter_list):
