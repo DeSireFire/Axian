@@ -52,17 +52,17 @@ class OpenAIOfficial(OpenAIBase):
     官方openai模块
     """
 
-    def askChatGPT(self, messages):
+    def askChatGPT(self, user_msg):
         """
         快速问答ChatGPT
-        :param messages: dict,openAi格式的字典数据
+        :param user_msg: str,用户信息
         :return:
         """
         openai.api_key = random.choice(self.api_keys)
         openai.proxy = self.proxies
         messages = []
         messages += self.system_msg
-        messages += [{"role": "user", "content": messages}]
+        messages += [{"role": "user", "content": user_msg}]
         response = openai.ChatCompletion.create(
             model=self.model,
             messages=messages,
