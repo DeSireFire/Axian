@@ -128,3 +128,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea
+
+# custom
+cqhttp/logs
+cqhttp/data
+cqhttp/dumps
+cqhttp/*.exe
+cqhttp/*.token
