@@ -15,15 +15,9 @@ from .gptCompose import *
 chatgptDemp = on_keyword({"cgpt"}, rule=to_me(), priority=1, block=True)
 @chatgptDemp.handle()
 async def chatgptCallBack(bot: Bot, event: Event):
-    messages = []
     user_msg = str(event.get_message())
-    d = {"role": "user", "content": user_msg}
-    messages.append(d)
     opai = OpenAIOfficial([])
-    gpt_msg = opai.askChatGPT(messages)
-    gpt_msg = gpt_msg.strip() if gpt_msg and gpt_msg.strip else ""
-    d = {"role": "assistant", "content": gpt_msg}
-    messages.append(d)
+    gpt_msg = opai.askChatGPT(user_msg)
     msgs = [MessageSegment.text(f'{gpt_msg}')]
     callback_msg = Message(msgs)
     await bot.send(
