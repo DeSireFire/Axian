@@ -7,6 +7,8 @@
 # Github    : https://github.com/DeSireFire
 __author__ = 'RaXianch'
 import redis
+import os
+import time
 import json
 REDIS_HOST = '192.168.60.122'
 REDIS_PORT = 6380
@@ -73,3 +75,52 @@ class RedisDBHelper(object):
 
     def exists(self, name):
         return self.server.incr(name)
+
+class JsonFileManager:
+    def __init__(self, file_path, expiration_time=0):
+        self.file_path = file_path
+        self.expiration_time = expiration_time
+        self.data = {}
+        self.load_data()
+
+    def load_data(self):
+        if os.path.exists(self.file_path):
+            with open(self.file_path, 'r') as f:
+                self.data = json.load(f)
+
+    def save_data(self):
+        with open(self.file_path, 'w') as f:
+            json.dump(self.data, f)
+
+    def add_data(self, key, value):
+        self.data[key] = value
+        self.save_data()
+
+    def delete_data(self, key):
+        if key in self.data:
+            del self.data[key]
+            self.save_data()
+
+    def update_data(self, key, value):
+        if key in self.data:
+            self.data[key] = value
+            self.save_data()
+
+    def get_data(self, key):
+        return self.data.get(key)
+
+    def check_expiration(self):
+        if self.expiration_time > 0:
+            current_time = time.time()
+            file_time = os.path.getmtime(self.file_path)
+            if current_time - file_time > self.expiration_time:
+                os.remove(self.file_path)
+
+if __name__ == '__main__':
+    file_manager = JsonFileManager('example.json', 3600)
+    file_manager.add_data('name', 'John')
+    file_manager.add_data('age', 30)
+    print(file_manager.get_data('name'))
+    file_manager.update_data('age', 31)
+    file_manager.delete_data('name')
+    file_manager.check_expiration()
