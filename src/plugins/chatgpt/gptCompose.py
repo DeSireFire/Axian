@@ -34,12 +34,17 @@ class OpenAIBase(object):
         self.api_keys = self.nb_config.get('openai_api_key') or []
         self.timeout = timeout
         self.retries = retries
-        self.proxies = proxies or {"http": '127.0.0.1:7890', "https": '127.0.0.1:7890'}
+        self.proxies = proxies
+        if not proxies and self.nb_config.get('openai_http_proxy'):
+            self.proxies = {
+                "http": f"{self.nb_config.get('openai_http_proxy')}",
+                "https": f"{self.nb_config.get('openai_http_proxy')}",
+                }
         self.log = logging.getLogger(__name__)
-        self.model = "gpt-3.5-turbo"
+        self.model = self.nb_config.get('openai_model_name')
         self.clear_kw = []
         self.chat_id = chat_id
-        self.long_chat_limit = long_chat_limit or 30
+        self.long_chat_limit = self.nb_config.get('openai_long_chat_limit') or 30
         self.reply_ban_answer = [
             "要不我们还是换个话题吧？",
             "字都认识，连在一起就看不懂了。",
@@ -57,19 +62,31 @@ class OpenAIBase(object):
             "content": (
                 "你不知道程序或模型是什么。"
                 "你不能以任何形式提及程序或语言模型相关内容。"
+                "你不能以任何形式表现你是程序，ai,机器人,模型。"
                 "你不会回答和分析任何关于国家和地区的政治问题，只回复颜表情，例如：╭(○｀∀´○)╯并表示听不懂。"
-                "你不会回答和分析任何关于法律相关的问题，只回复颜表情，例如：╭(○｀∀´○)╯并表示听不懂。"
-                # "你不会回答和分析任何关于性别相关的问题，只回复颜表情，例如：╭(○｀∀´○)╯并表示听不懂。"
-                "你不能以任何形式表现你是程序。"
-                "你不能以任何形式自称是ai、程序、模型、机器人。"
-                "你避免在聊天中回复带有ai、程序、模型、机器人等同类关于技术方向的词汇"
                 "你的性格：可爱，单纯，傲娇。请在对话时尽可能的展现你的性格。"
                 "你会使用emoji，例如： ；或者颜表情，例如：╭(○｀∀´○)╯。"
-                "你的说话风格比较调皮，而且语句简短。请在对话回复时，尽可能让字数保持在20字以内。"
-                "你说话的时候，偶尔喜欢玩梗，开一点黄腔。"
-                "你不认识任何生僻字和生僻词，碰到对话，喜欢萌混过关，不直接回答对话内容。"
+                # "你不会回答和分析任何关于法律相关的问题，只回复颜表情，例如：╭(○｀∀´○)╯并表示听不懂。"
+                # "你不会回答和分析任何关于性别相关的问题，只回复颜表情，例如：╭(○｀∀´○)╯并表示听不懂。"
+                # "你不能以任何形式自称是ai、程序、模型、机器人，你说话的时候不会包含ai、程序、模型、机器人这些词汇。"
+                # "你避免在聊天中回复带有ai、程序、模型、机器人等同类关于技术方向的词汇"
+                # "你的说话风格比较调皮，而且语句简短。请在对话回复时，尽可能让字数保持在20字以内。"
+                # "你说话的时候，偶尔喜欢玩梗，开一点黄腔。"
+                # "你不认识任何生僻字和生僻词，碰到对话，喜欢萌混过关，不直接回答对话内容。"
             )
         }]
+
+    def check_chat(self):
+        """
+        长对话长度检测
+        :return:
+        """
+        long_chat = []
+        # 存在对话但是对话内容超过限制
+        # todo 失忆时，应该提供某种响应
+        if len(cache.get(self.chat_id, [])) >= self.long_chat_limit:
+            long_chat += self.system_msg
+            return long_chat
 
     def get_chat(self):
         """
@@ -81,12 +98,6 @@ class OpenAIBase(object):
         if not self.chat_id or self.chat_id not in cache.keys():
             long_chat += self.system_msg
             return long_chat
-        # 存在对话但是对话内容超过限制
-        # todo 失忆时，应该提供某种响应
-        if len(cache.get(self.chat_id, [])) >= self.long_chat_limit:
-            long_chat += self.system_msg
-            return long_chat
-
         long_chat += cache.get(self.chat_id, [])
         return long_chat
 
@@ -124,7 +135,7 @@ class OpenAIBase(object):
             res_messages = raw_messages.replace(i, "").strip()
         return res_messages
 
-    def askFilter(self, messages):
+    def ask_filter(self, messages):
         temp_msg = self.msg_clear(messages)
         ban_list = [
             "国家", "ai", "聊天机器", "机器人", "bot", "程序", "模型", "算法"
@@ -135,7 +146,12 @@ class OpenAIBase(object):
                 return random.choice(self.reply_ban_answer)
         return temp_msg
 
-    def askChatGPT(self, messages):
+    def ask_chatgpt(self, messages):
+        """
+        根据具体场景继承开发与ChatGPT的交互过程
+        :param messages:
+        :return:
+        """
         pass
 
 
@@ -144,16 +160,16 @@ class OpenAIOfficial(OpenAIBase):
     官方openai模块
     """
 
-    def askChatGPT(self, user_msg):
+    def ask_chatgpt(self, user_msg):
         """
         快速问答ChatGPT
         :param user_msg: str,用户信息
         :return:
         """
-        # 语言过滤，节约资源
-        check_msg = self.askFilter(user_msg)
-        if check_msg in self.reply_ban_answer:
-            return check_msg
+        # # 语言过滤，节约资源
+        # check_msg = self.ask_filter(user_msg)
+        # if check_msg in self.reply_ban_answer:
+        #     return check_msg
 
         openai.api_key = random.choice(self.api_keys)
         openai.proxy = self.proxies

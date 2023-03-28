@@ -9,7 +9,9 @@ __author__ = 'RaXianch'
 
 import random
 import asyncio
-from . import detection_group, push_group
+from datetime import datetime
+from .compose import download_file
+from . import detection_group, push_group, download_group
 from nonebot.internal.rule import Rule
 from nonebot.matcher import Matcher
 from src.plugins.acrobatics import *
@@ -30,7 +32,7 @@ async def imgMessage(event: Event) -> bool:
     res_bool = False
     # 检测信息类型，包含图片类型的信息就返回真
     for m in msg_list:
-        if "image" == m.type:
+        if "image" == m.type or "video" == m.type:
             # print(f"rula测试-——imgMessage-->:{str(event.get_message())}")
             res_bool = True
             break
@@ -53,9 +55,25 @@ async def specifyGroupMessage(event: Event) -> bool:
     else:
         return False
 
+# Event 检测是否为指定监控的群体信息
+async def downloadGroupMessage(event: Event) -> bool:
+    # 将event转化成字典，方便后面的处理
+    event_dict = dict(event)
+
+    # 排除非群信息
+    get_session_id = str(event.get_session_id())
+    if not get_session_id.startswith('group'):
+        return False
+    group_id = event_dict.get("group_id")
+    if group_id in download_group:
+        return True
+    else:
+        return False
 
 forwardRule = Rule(imgMessage, specifyGroupMessage)
+dlRule = Rule(imgMessage, downloadGroupMessage)
 setuGroupForward = on_message(rule=forwardRule)
+setuGroupDownload = on_message(rule=dlRule)
 
 
 @setuGroupForward.handle()
@@ -101,6 +119,20 @@ async def setuGroupForwardMain(bot: Bot, event: Event, matcher: Matcher):
             group_id=push_group[0],
             message=callback_msg
         )
+
+@setuGroupDownload.handle()
+async def gdl(bot: Bot, event: Event):
+    user_msg = str(event.get_message())
+    event_dict = dict(event)
+    msgs = event_dict.get('message')
+    imgs = {i.get("data").get("file"): i.get("data").get("url") for i in msgs if i.get("data").get("subType") in ('0',)}
+    for k, v in imgs.items():
+        t = await download_file(v, f"F:\workSpace\myGithub\Axian\src\plugins\setu\cache\img\{k}.png")
+
+    # await bot.send(
+    #     event=event,
+    #     message=callback_msg
+    # )
 
 # 工具函数
 async def img_head_filter(img_urls: list) -> list:

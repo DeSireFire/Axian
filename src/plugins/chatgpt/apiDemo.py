@@ -30,7 +30,7 @@ async def chatgptCallBack(bot: Bot, event: Event):
     # 参数设置
     opai.chat_id = session_id
     opai.clear_kw = keywords
-    gpt_msg = opai.askChatGPT(user_msg)
+    gpt_msg = opai.ask_chatgpt(user_msg)
     msgs = [
         MessageSegment.reply(mid),
         MessageSegment.text(f'{gpt_msg}'),
