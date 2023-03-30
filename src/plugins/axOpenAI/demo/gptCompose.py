@@ -14,13 +14,12 @@ import ast
 import json
 import xmltodict
 import requests
-import openai
 import httpx
+import openai
 import logging
 import random
-from typing import List
-from src.utils.db_compose import RedisDBHelper
 from nonebot import get_driver
+from typing import List
 from parsel import Selector
 
 cache = {}
@@ -44,7 +43,7 @@ class OpenAIBase(object):
         self.model = self.nb_config.get('openai_model_name')
         self.clear_kw = []
         self.chat_id = chat_id
-        self.long_chat_limit = self.nb_config.get('openai_long_chat_limit') or 30
+        self.long_chat_limit = self.nb_config.get('openai_chat_limit') or 30
         self.reply_ban_answer = [
             "要不我们还是换个话题吧？",
             "字都认识，连在一起就看不懂了。",
@@ -60,9 +59,9 @@ class OpenAIBase(object):
         self.system_msg = [{
             "role": "system",
             "content": (
-                "你不知道程序或模型是什么。"
-                "你不能以任何形式提及程序或语言模型相关内容。"
-                "你不能以任何形式表现你是程序，ai,机器人,模型。"
+                # "你不知道程序或模型是什么。"
+                # "你不能以任何形式提及程序或语言模型相关内容。"
+                # "你不能以任何形式表现你是程序，ai,机器人,模型。"
                 "你不会回答和分析任何关于国家和地区的政治问题，只回复颜表情，例如：╭(○｀∀´○)╯并表示听不懂。"
                 "你的性格：可爱，单纯，傲娇。请在对话时尽可能的展现你的性格。"
                 "你会使用emoji，例如： ；或者颜表情，例如：╭(○｀∀´○)╯。"
@@ -180,7 +179,8 @@ class OpenAIOfficial(OpenAIBase):
         response = openai.ChatCompletion.create(
             model=self.model,
             messages=messages,
-            temperature=1)
+            temperature=1
+        )
         gpt_msg = response['choices'][0]['message']['content']
         gpt_msg = gpt_msg.strip() if gpt_msg and gpt_msg.strip else ""
         # 保存长对话内容

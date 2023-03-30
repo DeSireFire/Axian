@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Author    : RaXianch
-# CreatDATE : 2023/3/20
-# CreatTIME : 14:31
+# CreatDATE : 2023/3/28
+# CreatTIME : 17:39
 # Blog      : https://blog.raxianch.moe/
 # Github    : https://github.com/DeSireFire
 __author__ = 'RaXianch'
-from . import apiDemo
-from .help import *
-
-__all__ = ["demo"]
+from . import dominant
