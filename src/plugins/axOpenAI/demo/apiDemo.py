@@ -17,29 +17,51 @@ from .gptCompose import *
 nb_config = get_driver().config.dict()
 self_name = nb_config.get('nickname', [])
 
-# todo 更详细的触发条件
 keywords = set([":::", "：：："]+[f"@{i} :::" for i in self_name]+[f"@{i} ：：：" for i in self_name])
 chatgptDemp = on_keyword(keywords, rule=to_me(), priority=10, block=True)
 @chatgptDemp.handle()
 async def chatgptCallBack(bot: Bot, event: Event):
     user_msg = str(event.get_message())
     session_id = event.get_session_id()
-    mid = event.message_id
-    # 实例化
-    opai = OpenAIOfficial()
-    # 参数设置
-    opai.chat_id = session_id
-    opai.clear_kw = keywords
-    gpt_msg = opai.ask_chatgpt(user_msg)
+    event_dict = dict(event)
+    mid = event_dict.get("message_id")
+    readme = (
+        "::: 命令功能已暂时下限\n"
+        "使用以下命令来与bot交互：\n"
+        "::help : 命令帮助\n"
+    )
     msgs = [
         MessageSegment.reply(mid),
-        MessageSegment.text(f'{gpt_msg}'),
+        MessageSegment.text(f'{readme}'),
     ]
     callback_msg = Message(msgs)
     await bot.send(
         event=event,
         message=callback_msg
     )
+
+# keywords = set([":::", "：：："]+[f"@{i} :::" for i in self_name]+[f"@{i} ：：：" for i in self_name])
+# chatgptDemp = on_keyword(keywords, rule=to_me(), priority=10, block=True)
+# @chatgptDemp.handle()
+# async def chatgptCallBack(bot: Bot, event: Event):
+#     user_msg = str(event.get_message())
+#     session_id = event.get_session_id()
+#     mid = event.message_id
+#     # 实例化
+#     opai = OpenAIOfficial()
+#     # 参数设置
+#     opai.chat_id = session_id
+#     opai.clear_kw = keywords
+#     gpt_msg = opai.ask_chatgpt(user_msg)
+#     msgs = [
+#         MessageSegment.reply(mid),
+#         MessageSegment.text(f'{gpt_msg}'),
+#     ]
+#     callback_msg = Message(msgs)
+#     await bot.send(
+#         event=event,
+#         message=callback_msg
+#     )
 
 test = on_keyword({"t2t"}, rule=to_me(), priority=1, block=True)
 @test.handle()

@@ -29,6 +29,6 @@ class chatgpt(OpenAIBase):
         gpt_msg = await self.generate_text(chats)
 
         # 更新&保存对话信息
-        await self.update_to_save_chat(gpt_msg, chats)
+        u2s = await self.update_to_save_chat(imsg, gpt_msg)
 
         return gpt_msg

@@ -10,6 +10,6 @@ __author__ = 'RaXianch'
 from .demo import apiDemo
 from .help import *
 from .chat import *
-from .demo import *
+from .img import *
 
 __all__ = ["demo"]

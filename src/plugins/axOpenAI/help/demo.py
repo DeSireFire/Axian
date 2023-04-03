@@ -23,7 +23,7 @@ async def gptHelpCallBack(bot: Bot, event: Event):
         "::c : chat 聊天模式\n"
         "::i : img 图片模式\n"
         "::f : files 文件模式\n"
-        "::a : files 文件模式\n"
+        "::a : audio 语音模式\n"
     )
     msgs = [
         MessageSegment.reply(mid),

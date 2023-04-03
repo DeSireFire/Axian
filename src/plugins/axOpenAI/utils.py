@@ -43,3 +43,40 @@ def setting_chat_limit():
     chat_limit = config_dict.get('openai_chat_limit', 30)
     return int(chat_limit)
 
+def setting_redis_host():
+    """
+    从设置中，获取最大聊天长度
+    选取时的负载均衡或者复杂的处理逻辑可在该函数中补充
+    :return: int，大聊天长度
+    """
+    temp = config_dict.get('openai_redis_host', None)
+    return temp or None
+
+def setting_redis_db():
+    """
+    从设置中，获取最大聊天长度
+    选取时的负载均衡或者复杂的处理逻辑可在该函数中补充
+    :return: int，大聊天长度
+    """
+    temp = config_dict.get('openai_redis_db', 0)
+    return temp or 0
+
+def setting_redis_port():
+    """
+    从设置中，获取最大聊天长度
+    选取时的负载均衡或者复杂的处理逻辑可在该函数中补充
+    :return: int，大聊天长度
+    """
+    temp = config_dict.get('openai_redis_port', 6379)
+    return temp or 6379
+
+def setting_redis_password():
+    """
+    从设置中，获取最大聊天长度
+    选取时的负载均衡或者复杂的处理逻辑可在该函数中补充
+    :return: int，大聊天长度
+    """
+    temp = config_dict.get('openai_redis_password', None)
+    return temp or None
+
+

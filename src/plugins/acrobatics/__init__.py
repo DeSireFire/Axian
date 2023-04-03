@@ -6,6 +6,6 @@
 # Blog      : https://blog.raxianch.moe/
 # Github    : https://github.com/DeSireFire
 __author__ = 'RaXianch'
-base_cmd = ["qlmb"]
-base_aliases = {"确立目标"}
+# base_cmd = ["qlmb"]
+# base_aliases = {"确立目标"}
 # from . import fastCallback

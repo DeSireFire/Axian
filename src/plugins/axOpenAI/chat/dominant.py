@@ -21,7 +21,7 @@ from nonebot.rule import to_me
 from .handlers import chatgpt
 
 # 命令关键词
-keyword_comm = {"：：c", "：：C", "::c", "::C"}
+keyword_comm = {"：：c", "：：C", "::c", "::C", "AGI C", "agi c"}
 
 
 # Event 信息匹配过滤
@@ -51,6 +51,8 @@ async def chatCallBack(bot: Bot, event: Event):
     event_dict = dict(event)
     mid = event_dict.get("message_id")
     obj = chatgpt()
+    obj.chat_id = session_id
+    obj.input_clear += list(keyword_comm)
     gpt_msg = await obj.ask_openai(user_msg)
     msgs = [
         MessageSegment.reply(mid),
@@ -64,19 +66,19 @@ async def chatCallBack(bot: Bot, event: Event):
         message=callback_msg
     )
 
-    gpt_msg_list = gpt_msg.split("\n") or []
-    gpt_msg_list = [i.strip() for i in gpt_msg_list if i or i.strip()]
-    for line in gpt_msg_list:
-        lmsgs = [
-            MessageSegment.reply(mid),
-            MessageSegment.text(f'{line}'),
-        ]
-        callback_msg = Message(lmsgs)
-        await bot.send(
-            event=event,
-            message=callback_msg
-        )
-        await asyncio.sleep(1)
+    # gpt_msg_list = gpt_msg.split("\n") or []
+    # gpt_msg_list = [i.strip() for i in gpt_msg_list if i or i.strip()]
+    # for line in gpt_msg_list:
+    #     lmsgs = [
+    #         MessageSegment.reply(mid),
+    #         MessageSegment.text(f'{line}'),
+    #     ]
+    #     callback_msg = Message(lmsgs)
+    #     await bot.send(
+    #         event=event,
+    #         message=callback_msg
+    #     )
+    #     await asyncio.sleep(1)
 
 
 
