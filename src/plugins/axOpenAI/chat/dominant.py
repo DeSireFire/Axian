@@ -43,7 +43,6 @@ async def chat_rule(event: Event) -> bool:
 forwardRule = Rule(chat_rule) & to_me()
 gpt_chat = on_message(rule=forwardRule, priority=998)
 
-
 @gpt_chat.handle()
 async def chatCallBack(bot: Bot, event: Event):
     user_msg = str(event.get_message())

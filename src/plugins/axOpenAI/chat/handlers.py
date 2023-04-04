@@ -16,7 +16,8 @@ from ..components.OpenAI import OpenAIBase
 class chatgpt(OpenAIBase):
     def __init__(self):
         super().__init__()
-        self.model = "gpt-3.5-turbo"
+        # self.model = "gpt-3.5-turbo"
+        self.model = "text-davinci-003"
 
     async def ask_openai(self, input_msg):
         # 清洗信息

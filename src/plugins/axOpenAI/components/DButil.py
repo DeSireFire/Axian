@@ -14,18 +14,18 @@ import json
 from src.plugins.axOpenAI.utils import *
 
 # 实例化连接池
-try:
-    rdb_pool = redis.ConnectionPool(
-                host=setting_redis_host(),
-                port=setting_redis_port(),
-                db=setting_redis_db(),
-                password=setting_redis_password(),
-                decode_responses=True,
-                health_check_interval=30,
-                max_connections=100
-            )
-except Exception as e:
-    print(f"链接redis数据库发生错误！错误信息：{e}")
+# try:
+#     rdb_pool = redis.ConnectionPool(
+#                 host=setting_redis_host(),
+#                 port=setting_redis_port(),
+#                 db=setting_redis_db(),
+#                 password=setting_redis_password(),
+#                 decode_responses=True,
+#                 health_check_interval=30,
+#                 max_connections=100
+#             )
+# except Exception as e:
+#     print(f"链接redis数据库发生错误！错误信息：{e}")
 
 class RedisZset:
     def __init__(
@@ -33,18 +33,18 @@ class RedisZset:
             REDIS_DB=setting_redis_db(),
             REDIS_PW=setting_redis_password()
     ):
-        # self.pool = redis.ConnectionPool(
-        #     host=setting_redis_host(),
-        #     port=setting_redis_port(),
-        #     db=REDIS_DB,
-        #     password=REDIS_PW,
-        #     decode_responses=True,
-        #     health_check_interval=30,
-        #     max_connections=100
-        # )
+        self.rdb_pool = redis.ConnectionPool(
+            host=setting_redis_host(),
+            port=setting_redis_port(),
+            db=REDIS_DB,
+            password=REDIS_PW,
+            decode_responses=True,
+            health_check_interval=30,
+            max_connections=100
+        )
         self.rkey = "ax:chat_chain:"
         # 链接池获取链接
-        self.conn = redis.Redis(connection_pool=rdb_pool)
+        self.conn = redis.Redis(connection_pool=self.rdb_pool)
 
     def add(self, key, value, score=None):
         """
