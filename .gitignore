@@ -136,3 +136,5 @@ cqhttp/dumps
 cqhttp/*.exe
 cqhttp/*.token
 */cache/
+*.png
+*.jpg
