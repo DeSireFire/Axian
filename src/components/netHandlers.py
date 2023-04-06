@@ -46,8 +46,8 @@ class NetRequest(object):
             assert resp.status_code == 200
             return resp
 
-    async def make_requests(self):
-        tasks = [asyncio.create_task(self.request(_)) for _ in self.urls]
+    async def make_requests(self, **kwargs):
+        tasks = [asyncio.create_task(self.request(_, **kwargs)) for _ in self.urls]
         responses = await asyncio.gather(*tasks)
         return responses
 
@@ -106,6 +106,29 @@ class RequestHead(NetRequest):
         responses = asyncio.run(self.make_requests())
         return responses
 
+class RequestGet(NetRequest):
+    """
+    get请求器
+    """
+
+    async def async_url_get(self):
+        """
+        异步函数中调用该方法
+        :return:
+        """
+        self.method = "get"
+        responses = await self.make_requests()
+        return responses
+
+    def url_get(self, **kwargs):
+        """
+        在同步函数调用该方法
+        :return:
+        """
+        self.method = "get"
+        responses = asyncio.run(self.make_requests(**kwargs))
+        return responses
+
 
 if __name__ == '__main__':
     urls = [
@@ -115,3 +138,5 @@ if __name__ == '__main__':
     res = cls.url_get()
     heads = [dict(i.headers) for i in res]
     print(heads)
+
+

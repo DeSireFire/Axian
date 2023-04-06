@@ -9,7 +9,7 @@ __author__ = 'RaXianch'
 
 import random
 import asyncio
-from . import *
+from src.plugins.acrobatics import *
 from nonebot import on_keyword
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent, Message
 from nonebot.rule import to_me
