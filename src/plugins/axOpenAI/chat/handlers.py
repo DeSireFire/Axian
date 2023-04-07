@@ -32,3 +32,17 @@ class chatgpt(OpenAIBase):
         u2s = await self.update_to_save_chat(imsg, gpt_msg)
 
         return gpt_msg
+
+class promptgpt(OpenAIBase):
+    def __init__(self):
+        super().__init__()
+        self.model = "gpt-3.5-turbo"
+
+    async def ask_openai(self, input_msg):
+        # 清洗信息
+        imsg = await self.input_message_clear(input_msg)
+
+        # 获取gpt响应信息
+        gpt_msg = await self.generate_text(imsg)
+
+        return gpt_msg

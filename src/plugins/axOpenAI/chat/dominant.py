@@ -128,24 +128,3 @@ async def schatCallBack(bot: Bot, event: Event):
         message=callback_msg
     )
 
-
-# gpt_test = on_message(rule=to_me(), priority=999)
-# @gpt_test.handle()
-# async def testCallBack(bot: Bot, event: Event):
-#     user_msg = str(event.get_message())
-#     session_id = event.get_session_id()
-#     event_dict = dict(event)
-#     mid = event_dict.get("message_id")
-#     msgs = [
-#         MessageSegment.reply(mid),
-#         MessageSegment.text(f'\nuser_msg:{user_msg}'),
-#         MessageSegment.text(f'\nsession_id:{session_id}'),
-#         MessageSegment.text(f'\nmid:{mid}'),
-#     ]
-#     callback_msg = Message(msgs)
-#     # await gpt_chat.finish()
-#     # await bot.can_send_image()
-#     await bot.send(
-#         event=event,
-#         message=callback_msg
-#     )

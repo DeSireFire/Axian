@@ -51,6 +51,7 @@ class NetRequest(object):
         responses = await asyncio.gather(*tasks)
         return responses
 
+
 class RequestHead(NetRequest):
     """
     HEAD请求器
@@ -106,6 +107,7 @@ class RequestHead(NetRequest):
         responses = asyncio.run(self.make_requests())
         return responses
 
+
 class RequestGet(NetRequest):
     """
     get请求器
@@ -132,7 +134,9 @@ class RequestGet(NetRequest):
 
 if __name__ == '__main__':
     urls = [
-        "https://gchat.qpic.cn/gchatpic_new/260229253/1130724261-2969286274-E877E49962108D110E4F171341545FBB/0?term=255&amp;is_origin=0"
+        # "https://gchat.qpic.cn/gchatpic_new/260229253/1130724261-2969286274-E877E49962108D110E4F171341545FBB/0?term=255&amp;is_origin=0"
+        # "https://oaidalleapiprodscus.blob.core.windows.net/private/org-AAWiWvnioiinLwdXfMl7Amw7/user-VC461I6brih2JDhOuQe20WnQ/img-a4YJrIvJDfXGKmVSkVbArazH.png?st=2023-04-07T08%3A27%3A22Z&se=2023-04-07T10%3A27%3A22Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-06T20%3A44%3A15Z&ske=2023-04-07T20%3A44%3A15Z&sks=b&skv=2021-08-06&sig=7Wbq7Q8Ep6B6PL0Cpvel0HbOkHCAw8N4ZzcxWntNSqY%3D"
+        "https://oaidalleapiprodscus.blob.core.windows.net/private/org-AAWiWvnioiinLwdXfMl7Amw7/user-VC461I6brih2JDhOuQe20WnQ/img-ukNGC9adH9i03wHL40AjtvgL.png?st=2023-04-07T07%3A18%3A37Z&amp;se=2023-04-07T09%3A18%3A37Z&amp;sp=r&amp;sv=2021-08-06&amp;sr=b&amp;rscd=inline&amp;rsct=image/png&amp;skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2023-04-06T20%3A45%3A07Z&amp;ske=2023-04-07T20%3A45%3A07Z&amp;sks=b&amp;skv=2021-08-06&amp;sig=vKRb45cGoEqDNVsuRCJ0KuAT7XaweiV%2Bvn1anmWl5wI%3D,type=,cache=true,proxy=true,timeout="
     ]
     cls = RequestHead(urls)
     res = cls.url_get()

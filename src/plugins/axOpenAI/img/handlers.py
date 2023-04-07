@@ -15,6 +15,7 @@ from ..utils import setting_api_key, setting_proxies
 from ..components.OpenAI import OpenAIBase
 from ..components.MsgCallback import msgReply
 
+
 class imgDALLE(OpenAIBase):
     def __init__(self):
         super().__init__()

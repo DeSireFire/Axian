@@ -11,7 +11,14 @@ from nonebot import on_message, on_keyword
 from nonebot.rule import to_me
 from nonebot import get_driver
 
-gptHelp = on_keyword({"::help", "::帮助", "：：帮助", "：：help"}, rule=to_me(), priority=1, block=True)
+# 命令关键词
+hkeyword_comm = {
+    "::h", "::H",
+    "::help", "::HELP",
+    "::帮助", "：：帮助",
+    "：：help", "：：HELP",
+}
+gptHelp = on_keyword(hkeyword_comm, rule=to_me(), priority=1, block=True)
 @gptHelp.handle()
 async def gptHelpCallBack(bot: Bot, event: Event):
     user_msg = str(event.get_message())

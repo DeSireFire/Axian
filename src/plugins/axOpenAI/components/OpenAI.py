@@ -122,6 +122,31 @@ class OpenAIBase(object):
         # pprint(message)
         return message
 
+    async def generate_prompt(self, prompt):
+        """
+        与openai交互
+        :param prompt: 提示问答信息
+        :return:
+        """
+        openai.api_key = self.api_keys
+        openai.proxy = self.proxies
+
+        prompt = prompt
+        # 调用 ChatGPT 接口
+        model_engine = "text-davinci-003"
+        prompt = prompt
+        completions = openai.Completion.create(
+            engine=model_engine,
+            prompt=prompt,
+            max_tokens=1024,
+            n=1,
+            stop=None,
+            temperature=0.5,
+        )
+        message = completions.choices[0].text
+        # pprint(message)
+        return message
+
     async def structure_chat(self, input_msg):
         """
         获取&构造对话信息数据体
