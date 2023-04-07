@@ -20,10 +20,9 @@ async def gptHelpCallBack(bot: Bot, event: Event):
     mid = event_dict.get("message_id")
     readme = (
         "::help : 命令帮助\n"
-        "::c : chat 聊天模式\n"
+        "::c : chat 上下文聊天模式\n"
+        "::p : prompt 提示模式\n"
         "::i : img 图片模式\n"
-        "::f : files 文件模式\n"
-        "::a : audio 语音模式\n"
     )
     msgs = [
         MessageSegment.reply(mid),

@@ -21,18 +21,33 @@ from nonebot.rule import to_me
 from .handlers import chatgpt
 
 # 命令关键词
-keyword_comm = {"：：c", "：：C", "::c", "::C", "AGI C", "agi c"}
-
+ckeyword_comm = {"：：c", "：：C", "::c", "::C", "AGI C", "agi c"}
+pkeyword_comm = {"：：p", "：：P", "::p", "::P", "AGI P", "agi p"}
 
 # Event 信息匹配过滤
-async def chat_rule(event: Event) -> bool:
+async def cchat_rule(event: Event) -> bool:
     """
     便于日后添加更复杂的过滤逻辑
     :param event:
     :return:
     """
     msg = str(event.get_message())
-    for i in list(keyword_comm):
+    for i in list(ckeyword_comm):
+        if msg.startswith(i):
+            return True
+        else:
+            continue
+    return False
+
+# Event 信息匹配过滤
+async def pchat_rule(event: Event) -> bool:
+    """
+    便于日后添加更复杂的过滤逻辑
+    :param event:
+    :return:
+    """
+    msg = str(event.get_message())
+    for i in list(pkeyword_comm):
         if msg.startswith(i):
             return True
         else:
@@ -40,18 +55,32 @@ async def chat_rule(event: Event) -> bool:
     return False
 
 
-forwardRule = Rule(chat_rule) & to_me()
-gpt_chat = on_message(rule=forwardRule, priority=998)
+chain_chat_Rule = Rule(cchat_rule) & to_me()
+prompt_chat_Rule = Rule(pchat_rule) & to_me()
+chain_chat = on_message(rule=chain_chat_Rule, priority=998)
+prompt_chat = on_message(rule=prompt_chat_Rule, priority=998)
 
-@gpt_chat.handle()
-async def chatCallBack(bot: Bot, event: Event):
+# 记忆上下文
+@chain_chat.handle()
+async def cchatCallBack(bot: Bot, event: Event):
     user_msg = str(event.get_message())
     session_id = event.get_session_id()
     event_dict = dict(event)
     mid = event_dict.get("message_id")
+    # 回声回复，先给用户正向反馈
+    loading_msg = [
+        MessageSegment.reply(mid),
+        MessageSegment.text(f'emmm...')
+    ]
+    await bot.send(
+        event=event,
+        message=Message(loading_msg)
+    )
+
+    # 获取gpt内容
     obj = chatgpt()
     obj.chat_id = session_id
-    obj.input_clear += list(keyword_comm)
+    obj.input_clear += list(ckeyword_comm)
     gpt_msg = await obj.ask_openai(user_msg)
     msgs = [
         MessageSegment.reply(mid),
@@ -65,20 +94,39 @@ async def chatCallBack(bot: Bot, event: Event):
         message=callback_msg
     )
 
-    # gpt_msg_list = gpt_msg.split("\n") or []
-    # gpt_msg_list = [i.strip() for i in gpt_msg_list if i or i.strip()]
-    # for line in gpt_msg_list:
-    #     lmsgs = [
-    #         MessageSegment.reply(mid),
-    #         MessageSegment.text(f'{line}'),
-    #     ]
-    #     callback_msg = Message(lmsgs)
-    #     await bot.send(
-    #         event=event,
-    #         message=callback_msg
-    #     )
-    #     await asyncio.sleep(1)
+# 不记忆上下文
+@prompt_chat.handle()
+async def schatCallBack(bot: Bot, event: Event):
+    user_msg = str(event.get_message())
+    session_id = event.get_session_id()
+    event_dict = dict(event)
+    mid = event_dict.get("message_id")
+    # 回声回复，先给用户正向反馈
+    loading_msg = [
+        MessageSegment.reply(mid),
+        MessageSegment.text(f'emmm...')
+    ]
+    await bot.send(
+        event=event,
+        message=Message(loading_msg)
+    )
 
+    # 获取gpt内容
+    obj = chatgpt()
+    obj.chat_id = None
+    obj.input_clear += list(pkeyword_comm)
+    gpt_msg = await obj.ask_openai(user_msg)
+    msgs = [
+        MessageSegment.reply(mid),
+    ]
+    msgs += [
+        MessageSegment.text(f'{gpt_msg}')
+    ]
+    callback_msg = Message(msgs)
+    await bot.send(
+        event=event,
+        message=callback_msg
+    )
 
 
 # gpt_test = on_message(rule=to_me(), priority=999)
