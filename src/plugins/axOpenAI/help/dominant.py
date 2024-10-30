@@ -35,7 +35,9 @@ async def gptHelpCallBack(bot: Bot, event: Event):
         MessageSegment.reply(mid),
         MessageSegment.text(f'{readme}'),
     ]
+    # print(f"msgs：{msgs}")
     callback_msg = Message(msgs)
+    # await gptHelp.finish(Message("你好！"))
     await bot.send(
         event=event,
         message=callback_msg

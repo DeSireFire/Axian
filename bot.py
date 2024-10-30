@@ -30,6 +30,7 @@ config = driver.config
 # 插件加载（pip 安装的需要通过这里载入）
 nonebot.load_builtin_plugins("echo")
 # nonebot.load_plugin('nonebot_plugin_60s')
+# nonebot.load_plugin('nonebot-plugin-tarot')
 # pyproject.toml读取各项配置
 nonebot.load_from_toml("pyproject.toml")
 

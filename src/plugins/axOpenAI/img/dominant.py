@@ -58,15 +58,17 @@ async def imgCallBack(bot: Bot, event: Event):
     obj.input_clear += list(keyword_comm)
     dealle_img = await obj.ask_openai(user_msg)
     check_img_url = True
+    status_code = 200
     try:
         urls = [dealle_img]
         cls = RequestHead(urls)
         res = cls.url_get()
+        status_code = res[0].status_code
     except Exception as e:
         check_img_url = False
         print(f"生成图片发生错误 url:{dealle_img} error:{e}")
 
-    if "http" in dealle_img and check_img_url:
+    if "http" in dealle_img and check_img_url and status_code == 200:
         msgs = [
             MessageSegment.reply(mid),
             MessageSegment(type='text', data={'text': f"根据 {user_msg} 我完成的涂鸦~"}),

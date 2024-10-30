@@ -6,7 +6,7 @@
 # Blog      : https://blog.raxianch.moe/
 # Github    : https://github.com/DeSireFire
 __author__ = 'RaXianch'
-detection_group = [681666551, 813781752, 1130724261]
+detection_group = [681666551, 813781752, 1130724261, 153499511]
 push_group = [758810535, 774150811]
 download_group = [758810535]
 from . import groupForward

@@ -25,8 +25,13 @@ class chatgpt(OpenAIBase):
         # 获取&构造对话信息
         chats = await self.structure_chat(imsg)
 
-        # 获取gpt响应信息
-        gpt_msg = await self.generate_text(chats)
+        try:
+            # 获取gpt响应信息
+            gpt_msg = await self.generate_text(chats)
+        except Exception as e:
+            self.log.error(e)
+            self.db.conn.delete(f"ax:chat_chain:{self.chat_id}")
+            return f"在思考回复的时候，发生了一些无法解决的错误。还是谈论一些新的话题吧！"
 
         # 更新&保存对话信息
         u2s = await self.update_to_save_chat(imsg, gpt_msg)

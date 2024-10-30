@@ -1,26 +1,26 @@
 {
-  "display": "MIRAI.519384.001",
-  "product": "mirai",
-  "device": "mirai",
-  "board": "mirai",
-  "model": "mirai",
-  "finger_print": "mamoe/mirai/mirai:10/MIRAI.200122.001/1631375:user/release-keys",
-  "boot_id": "b1a09e55-4e59-fa68-9524-108612a81965",
-  "proc_version": "Linux version 3.0.31-ewkhD7RH (android-build@xxx.xxx.xxx.xxx.com)",
-  "protocol": 3,
-  "imei": "931067672485165",
-  "brand": "mamoe",
+  "display": "RAXIANCH.656509.008",
+  "product": "raxianch",
+  "device": "raxianch",
+  "board": "raxianch",
+  "model": "raxianch",
+  "finger_print": "mamoe/raxianch/raxianch:10/RAXIANCH.200122.001/9488897:user/release-keys",
+  "boot_id": "8ea77dd3-bab6-fbda-9dfc-5f5486a04f49",
+  "proc_version": "Linux version 3.0.31-93lIwwvS (android-build@xxx.xxx.xxx.xxx.com)",
+  "protocol": 6,
+  "imei": "934323501030574",
+  "brand": "mahigh",
   "bootloader": "unknown",
   "base_band": "",
   "version": {
     "incremental": "5891938",
     "release": "10",
     "codename": "REL",
-    "sdk": 29
+    "sdk": 88
   },
   "sim_info": "T-Mobile",
   "os_type": "android",
-  "mac_address": "00:50:56:C0:00:08",
+  "mac_address": "00:50:56:a0:03:05",
   "ip_address": [
     10,
     0,
@@ -29,9 +29,9 @@
   ],
   "wifi_bssid": "00:50:56:C0:00:08",
   "wifi_ssid": "\u003cunknown ssid\u003e",
-  "imsi_md5": "eda84441eda5032c81da098219857811",
-  "android_id": "0438720d5c0b6026",
+  "imsi_md5": "c05c42e95ec6fecbd7565e8749c0e951",
+  "android_id": "402b41dade7fd810",
   "apn": "wifi",
   "vendor_name": "MIUI",
-  "vendor_os_name": "RaXianch"
+  "vendor_os_name": "raxianch"
 }

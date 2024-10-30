@@ -116,7 +116,7 @@ class ChatGPT:
             return None
 
 if __name__ == "__main__":
-    openai.api_key = "sk-x"
+    openai.api_key = "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"
     chatbot = ChatGPT(api_keys=[openai.api_key], timeout=10, retries=3, proxies=None)
     prompt = "今晚吃什么?"
     response = await chatbot.send_message(prompt)
